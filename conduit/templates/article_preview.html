@@ -1,0 +1,17 @@
+<div class="article-preview">
+    <div class="article-meta">
+        <div class="info">
+        <span class="author">
+            {{ article.author.user.username }}
+        </span>
+        <span class="date">
+            {{ article.created_at|date:'D M d Y' }}
+        </span>
+        </div>
+    </div>
+    <a href="" class="preview-link">
+        <h1>{{ article.title }}</h1>
+        <p>{{ article.description }}</p>
+        <span>Read more...</span>
+    </a>
+</div>
