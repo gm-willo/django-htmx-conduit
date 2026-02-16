@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>{{ article.title }} - Conduit: Django + HTMX</title>
+{% endblock %}
+
+{% block content %}
+    <div class="article-page">
+        <div class="banner">
+            <div class="container">
+                <h1>{{ article.title }}</h1>
+                {% include "article_meta.html" %}
+            </div>
+        </div>
+        <div class="container page">
+            <div class="row article-content">
+                <div class="col-xs-12">
+                    <div>
+                        {{ article.body|linebreaks }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

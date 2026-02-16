@@ -1,11 +1,19 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 
 from .models import Article
 
 
 def home(request):
     """View all published articles for the global feed."""
-    
+
     articles = Article.objects.order_by("-created_at")
     context = {"articles": articles}
     return render(request, "home.html", context)
+
+
+def article_detail(request, pk):
+    """Detail view for individual articles."""
+
+    article = get_object_or_404(Article, pk=pk)
+    context = {"article": article}
+    return render(request, "article_detail.html", context)
