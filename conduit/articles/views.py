@@ -11,9 +11,9 @@ def home(request):
     return render(request, "home.html", context)
 
 
-def article_detail(request, pk):
+def article_detail(request, slug, uuid):
     """Detail view for individual articles."""
 
-    article = get_object_or_404(Article, pk=pk)
+    article = get_object_or_404(Article, slug=slug, uuid=uuid)
     context = {"article": article}
     return render(request, "article_detail.html", context)
