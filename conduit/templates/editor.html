@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}
+    <title>Editor - Conduit: Django + HTMX</title>
+{% endblock %}
+{% block content %}
+    <div class="editor-page">
+        <div class="container page">
+            <div class="row">
+                <div class="col-md-10 offset-md-1 col-xs-12">
+                <form method="post">
+                    {% csrf_token %}
+                    <fieldset>
+                    {{ form.non_field_errors }}
+                    <fieldset class="form-group">
+                        <input
+                        class="form-control form-control-lg"
+                        type="text"
+                        placeholder="Article Title"
+                        name="{{ form.title.name }}"
+                        value="{{ form.title.value|default_if_none:'' }}"
+                        />
+                    </fieldset>
+                    {{ form.title.errors }}
+                    <fieldset class="form-group">
+                        <input
+                        class="form-control"
+                        type="text"
+                        placeholder="What's this article about?"
+                        name="{{ form.description.name }}"
+                        value="{{ form.description.value|default_if_none:'' }}"
+                        />
+                    </fieldset>
+                    {{ form.description.errors }}
+                    <fieldset class="form-group">
+                        <textarea
+                        class="form-control"
+                        rows="8"
+                        placeholder="Write your article (in markdown)"
+                        name="{{ form.body.name }}"
+                    >{{ form.body.value|default_if_none:'' }}
+                    </textarea>
+                    </fieldset>
+                    {{ form.body.errors }}
+                    <button class="btn btn-lg pull-xs-right btn-primary">
+                        Publish Article
+                    </button>
+                    </fieldset>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
