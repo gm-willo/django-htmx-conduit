@@ -1,12 +1,16 @@
 <div class="article-preview">
     <div class="article-meta">
+        <a href="{% url "profile_detail" username=article.author.user.username %}">
+            <img src="{{ article.author.image }}" alt="{{ article.author.user.username }}">
+        </a>
         <div class="info">
-        <span class="author">
-            {{ article.author.user.username }}
-        </span>
-        <span class="date">
-            {{ article.created_at|date:'D M d Y' }}
-        </span>
+            <a href="{% url "profile_detail" username=article.author.user.username %}" class="author"></a>
+            <span class="author">
+                {{ article.author.user.username }}
+            </span>
+            <span class="date">
+                {{ article.created_at|date:'D M d Y' }}
+            </span>
         </div>
     </div>
     <a href="{{ article.get_absolute_url }}" rel="prefetch" class="preview-link">

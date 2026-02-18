@@ -5,6 +5,12 @@
         </p>
     </div>
     <div class="card-footer">
+        <a href="{% url "profile_detail" username=comment.author.user.username %}" class="comment-author">
+            <img src="{{ comment.author.image }}" class="comment-author-img" alt="{{ comment.author.user.username }}" />
+        </a>
+        <a href="{% url "profile_detail" username=comment.author.user.username %}" class="comment-author">
+            {{ comment.author.user.username }}
+        </a>
         <span class="comment-author">
             {{ comment.author.user.username }}
         </span>
