@@ -5,9 +5,10 @@ from django.views.generic import CreateView
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect, render, get_object_or_404
-from django.http import HttpResponseForbidden
+from django.views.decorators.http import require_http_methods
 
 from .models import User
+from .forms import ProfileForm, UserForm
 
 
 class Login(LoginView):
@@ -59,3 +60,25 @@ def profile_detail(request, username):
     return render(request, "profile_detail.html", context)
 
 
+@login_required
+@require_http_methods(["GET", "POST"])
+def profile_update(request):
+    """Update view for user profile and account settings"""
+    
+    if request.method == "POST":
+        profile_form = ProfileForm(request.POST, instance=request.user.profile)
+        user_form = UserForm(request.POST, instance=request.user)
+        
+        if profile_form.is_valid() and user_form.is_valid():
+            profile_form.save()
+            user_form.save()
+            return redirect("settings")
+    else:
+        profile_form = ProfileForm(instance=request.user.profile)
+        user_form = UserForm(instance=request.user)
+    
+    context = {
+        "form": profile_form,
+        "user_form": user_form,
+    }
+    return render(request, "settings.html", context)

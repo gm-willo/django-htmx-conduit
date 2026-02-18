@@ -37,6 +37,17 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    {% url 'settings' as settings %}
+                    <a
+                        href="{{ settings }}"
+                        rel="prefetch"
+                        class="nav-link
+                            {% if request.path == settings %}active{% endif %}"
+                    >
+                        <span class="ion-gear-a"> Settings </span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <form method="post" action="{% url "logout" %}" style="display:inline;">
                         {% csrf_token %}
                         <button type="submit" class="nav-link" style="background:none; border:none; cursor:pointer;">
