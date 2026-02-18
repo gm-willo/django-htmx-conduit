@@ -24,11 +24,31 @@ class Article(models.Model):
 
     def __str__(self):
         return self.title
-    
+
     def get_absolute_url(self):
         return reverse("article_detail", kwargs={"slug": self.slug, "uuid": self.uuid})
-    
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+
+
+class Comment(models.Model):
+    article = models.ForeignKey(
+        Article, on_delete=models.CASCADE, related_name="comments"
+    )
+    body = models.TextField()
+    author = models.ForeignKey(
+        "users.Profile", on_delete=models.CASCADE, related_name="comments"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.body[:60] + "..."
+
+    def get_absolute_url(self):
+        return reverse(
+            "article_detail",
+            kwargs={"slug": self.article.slug, "uuid": self.article.uuid},
+        )

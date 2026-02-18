@@ -1,0 +1,16 @@
+<div class="card">
+    <div class="card-block">
+        <p class="card-text">
+            {{ comment.body }}
+        </p>
+    </div>
+    <div class="card-footer">
+        <span class="comment-author">
+            {{ comment.author.user.username }}
+        </span>
+        <span class="date-posted">
+            {{ comment.created_at|date:"D M d Y" }}
+        </span>
+        {% include "comment_delete.html" %}
+    </div>
+</div>
