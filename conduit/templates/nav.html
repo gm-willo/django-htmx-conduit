@@ -12,18 +12,49 @@
                 Home
                 </a>
             </li>
-            <li class="nav-item">
-                {% url 'article_create' as article_create %}
-                <a
-                    href="{{ article_create }}"
-                    rel="prefetch"
-                    class="nav-link {% if request.path == article_create %}active{% endif %}"
+            {% if user.is_authenticated %}
+                <li class="nav-item">
+                    {% url 'article_create' as article_create %}
+                    <a
+                        href="{{ article_create }}"
+                        rel="prefetch"
+                        class="nav-link {% if request.path == article_create %}active{% endif %}"
+                        >
+                        <span class="ion-compose">
+                            New Post
+                        </span> 
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <form method="post" action="{% url "logout" %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="nav-link" style="background:none; border:none; cursor:pointer;">
+                            <span class="ion-log-out"></span> Logout
+                        </button>
+                    </form>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    {% url "login" as login %}
+                    <a
+                        href="{{ login }}"
+                        rel="prefetch"
+                        class="nav-link {% if request.path == login %}active{% endif %}"
                     >
-                    <span class="ion-compose">
-                        New Post
-                    </span> 
-                </a>
-            </li>
+                        Sign in
+                    </a>
+                </li>
+                <li class="nav-item">
+                    {% url "signup" as signup %}
+                    <a
+                        href="{{ signup }}"
+                        rel="prefetch"
+                        class="nav-link {% if request.path == signup %}active{% endif %}"
+                    >
+                        Sign up
+                    </a>
+                </li>
+            {% endif %}
         </ul>
     </div>
 </nav>

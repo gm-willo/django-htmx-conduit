@@ -7,15 +7,17 @@
             {{ article.created_at|date:"D M d Y" }}
         </span>
     </div>
-    <span>
-        <a
-            href="{% url "article_update" slug=article.slug uuid=article.uuid %}"
-            class="btn btn-outline-secondary btn-sm"
-        >
+    {% if user == article.author.user %}
         <span>
-            Edit Article
+            <a
+                href="{% url "article_update" slug=article.slug uuid=article.uuid %}"
+                class="btn btn-outline-secondary btn-sm"
+            >
+            <span>
+                Edit Article
+            </span>
+            </a>
+            {% include "article_delete.html" %}
         </span>
-        </a>
-        {% include "article_delete.html" %}
-    </span>
+    {% endif %}
 </div>

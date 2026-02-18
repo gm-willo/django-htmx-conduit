@@ -109,10 +109,11 @@ def comment_delete(request, slug, uuid, pk):
     article = get_object_or_404(Article, slug=slug, uuid=uuid)
     comment = get_object_or_404(Comment, pk=pk)
     
-    if article.author != request.user.profile:
+    if comment.author != request.user.profile:
         return HttpResponseForbidden("You've not the permission to delete this comment.")
     
     if request.method == "POST":
         comment.delete()
+        return redirect(comment.get_absolute_url())
     
     return render(request, "article_detail.html", {"article": article})
