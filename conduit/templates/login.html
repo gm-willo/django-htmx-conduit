@@ -1,0 +1,44 @@
+<!-- form.username corresponds to email. form.username query what USERNAME_FIELD is -->
+{% extends 'base.html' %}
+{% block title %}
+    <title>Sign in - Conduit: Django + HTMX</title>
+{% endblock %}
+{% block content %}
+    <div class="auth-page">
+        <div class="container page">
+            <div class="row">
+                <div class="col-md-6 offset-md-3 col-xs-12">
+                    <h1 class="text-xs-center">Sign In</h1>
+                    <p class="text-xs-center">
+                        <a href="{% url 'signup' %}">Need an account?</a>
+                    </p>
+                    {{ form.non_field_errors }}
+                    <form method="post">
+                        {% csrf_token %}
+                        <fieldset class="form-group">
+                            <input
+                                class="form-control form-control-lg"
+                                type="email"
+                                placeholder="Email"
+                                name="{{ form.username.name }}"
+                            >
+                            {{ form.username.errors }}
+                        </fieldset>
+                        <fieldset class="form-group">
+                            <input
+                                class="form-control form-control-lg"
+                                type="password"
+                                placeholder="Password"
+                                name="{{ form.password.name }}"
+                            >
+                            {{ form.password.errors }}
+                        </fieldset>
+                        <button class="btn btn-lg btn-primary pull-xs-right" type="submit">
+                            Sign in
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
