@@ -1,16 +1,70 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager
+
+from config import settings
+
+
+class CustomUserManager(UserManager):
+    """custom UserManager with email as unique identifier instead of username."""
+
+    def create_user(self, username, email, password=None):
+        """Create and return a User with username, email and password."""
+
+        if email is None:
+            raise ValueError("Email is required.")
+        if username is None:
+            raise ValueError("Username is required.")
+
+        email = self.normalize_email(email)
+        user = self.model(username=username, email=email)
+        user.set_password(password)
+        user.save(using=self._db)
+
+        return user
+
+    def create_superuser(self, username, email, password=None):
+        """Create and return a SuperUser with admin permissions."""
+
+        user = self.create_user(username, email, password)
+        user.is_staff = True
+        user.is_superuser = True
+        user.is_active = True
+        user.save(using=self._db)
+
+        return user
+
 
 class User(AbstractUser):
     """Custom user model."""
-    
-    pass
+
+    username = models.CharField(max_length=255, unique=True)
+    email = models.EmailField(unique=True)
+    # password field is already provided by AbstractUser
+
+    USERNAME_FIELD = (
+        "email"  # when a user logs in, he will enter his email in "username" field
+    )
+    REQUIRED_FIELDS = [
+        "username"
+    ]  # during sign up USERNAME_FIELD and password are mandatory by default
+
+    objects = CustomUserManager()
+
+    def __str__(self):
+        return self.email
 
 
 class Profile(models.Model):
     """Profile model associated to each User object."""
-    
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    
+
+    # AUTH_USER_MODEL is a variable set in config/settings.py
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile"
+    )
+    image = models.URLField(
+        default="https://static.productionready.io/images/smiley-cyrus.jpg"
+    )
+    bio = models.TextField(max_length=1000, blank=True)
+
     def __str__(self):
         return self.user.username
