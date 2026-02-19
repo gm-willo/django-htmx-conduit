@@ -56,7 +56,8 @@ def profile_detail(request, username):
     
     if request.user.is_authenticated:
         context["my_articles"] = profile.articles.order_by("-created_at")
-    
+        context["is_following"] = request.user.profile.is_following(profile)
+            
     return render(request, "profile_detail.html", context)
 
 
@@ -82,3 +83,25 @@ def profile_update(request):
         "user_form": user_form,
     }
     return render(request, "settings.html", context)
+
+
+@login_required
+@require_http_methods(["POST"])
+def profile_follow(request, username):
+    """Follow or unfollow a user profile."""
+    
+    user_to_follow = get_object_or_404(User, username=username)
+    profile_to_follow = user_to_follow.profile
+    
+    current_profile = request.user.profile
+    
+    if current_profile.is_following(profile_to_follow):
+        current_profile.unfollow(profile_to_follow)
+    else:
+        current_profile.follow(profile_to_follow)
+        
+    next_url = request.POST.get("next")
+    if next_url:
+        return redirect(next_url)
+    
+    return redirect("profile_detail", username=username)
