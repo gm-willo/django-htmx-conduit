@@ -1,19 +1,28 @@
-<form
-    method="post"
-    action="{% url 'profile_follow' username=profile.user.username %}"
-    style="display:inline;"
-    >
-    <input type="hidden" name="next" value="{{ request.path }}">
+<form method="post"
+    action="{% if user.is_authenticated %}
+        {% url 'profile_follow' username=profile.user.username %}
+    {% else %}
+        {% url 'login' %}
+    {% endif %}"
+    style="display:inline;">
+    <input type="hidden" name="next" value="{{ request.path }}" />
     {% csrf_token %}
     <button class="btn btn-sm action-btn
-        {% if is_following %}
-            btn-secondary
+            {% if is_following %}
+        
+                btn-secondary
+
         {% else %}
-            btn-outline-secondary
-        {% endif %}"
-    >
+        
+                btn-outline-secondary
+
+        {% endif %}">
         <span class="ion-plus-round">
-            {% if is_following %}Unfollow{% else %}Follow{% endif %} {{ profile.user.username }}
+        {% if is_following %}
+            Unfollow
+        {% else %}
+            Follow
+        {% endif %} {{ profile.user.username }}
         </span>
     </button>
 </form>

@@ -12,4 +12,5 @@ urlpatterns = [
     path("profile/@<str:username>", views.profile_detail, name="profile_detail"),
     path("settings", views.profile_update, name="settings"),
     path("profile/@<str:username>/follow", views.profile_follow, name="profile_follow"),
+    path("profile/@<str:username>/favorites", views.profile_detail, name="profile_favorites"),
 ]

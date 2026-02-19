@@ -1,0 +1,32 @@
+<form method="post"
+    action="{% if user.is_authenticated %}
+        {% url 'article_favorite' slug=article.slug uuid=article.uuid %}
+    {% else %}
+        {% url 'login' %}
+    {% endif %}"
+    style="display:inline;">
+    <input type="hidden" name="next" value="{{ request.path }}" />
+    {% csrf_token %}
+    <button class="btn btn-sm action-btn
+                        {% if article in user.profile.favorites.all %}
+        
+                        btn-primary
+
+        {% else %}
+        
+                        btn-outline-primary
+
+        {% endif %}">
+        <span class="ion-heart">
+        {% if request.path|truncatechars:7 == 'article' %}
+            {% if article in user.profile.favorites.all %}
+            Unfavorite
+            {% else %}
+            Favorite
+            {% endif %}Article ({{ article.favorited.count }})
+        {% else %}
+            {{ article.favorited.count }}
+        {% endif %}
+        </span>
+    </button>
+</form>

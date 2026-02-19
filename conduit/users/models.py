@@ -5,10 +5,10 @@ from config import settings
 
 
 class CustomUserManager(UserManager):
-    """custom UserManager with email as unique identifier instead of username."""
+    """custom UserManager with email as unique identifier instead of username"""
 
     def create_user(self, username, email, password=None):
-        """Create and return a User with username, email and password."""
+        """Create and return a User with username, email and password"""
 
         if email is None:
             raise ValueError("Email is required.")
@@ -23,7 +23,7 @@ class CustomUserManager(UserManager):
         return user
 
     def create_superuser(self, username, email, password=None):
-        """Create and return a SuperUser with admin permissions."""
+        """Create and return a SuperUser with admin permissions"""
 
         user = self.create_user(username, email, password)
         user.is_staff = True
@@ -35,7 +35,7 @@ class CustomUserManager(UserManager):
 
 
 class User(AbstractUser):
-    """Custom user model."""
+    """Custom user model"""
 
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(unique=True)
@@ -55,7 +55,7 @@ class User(AbstractUser):
 
 
 class Profile(models.Model):
-    """Profile model associated to each User object."""
+    """Profile model associated to each User object"""
 
     # AUTH_USER_MODEL is a variable set in config/settings.py
     user = models.OneToOneField(
@@ -68,18 +68,33 @@ class Profile(models.Model):
     follows = models.ManyToManyField(
         "self", related_name="followed_by", symmetrical=False, blank=True
     )
-    
+    favorites = models.ManyToManyField(
+        "articles.Article", related_name="favorited", blank=True
+    )
+
     def follow(self, profile):
         """Follow `profile`"""
         self.follows.add(profile)
-    
+
     def unfollow(self, profile):
         """Unfollow `profile`"""
         self.follows.remove(profile)
-        
+
     def is_following(self, profile):
         """Return True if `profile` is in self.follows, False otherwise"""
         return self.follows.filter(pk=profile.pk).exists()
+
+    def favorite(self, article):
+        """Add article to Favorites"""
+        self.favorites.add(article)
+
+    def unfavorite(self, article):
+        """Remove article from Favorites"""
+        self.favorites.remove(article)
+
+    def has_favorited(self, article):
+        """Return True if article is in Favorite, False otherwise"""
+        return self.favorites.filter(pk=article.pk).exists()
 
     def __str__(self):
         return self.user.username

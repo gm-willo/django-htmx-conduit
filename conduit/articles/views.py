@@ -9,7 +9,7 @@ from .models import Article, Comment
 
 
 def home(request):
-    """View all published articles for the global feed."""
+    """View all published articles for the global feed"""
 
     global_feed = Article.objects.order_by("-created_at")
     context = {"global_feed": global_feed}
@@ -25,7 +25,7 @@ def home(request):
 
 
 def article_detail(request, slug, uuid):
-    """Detail view for individual articles."""
+    """Detail view for individual articles"""
 
     form = CommentForm()
 
@@ -41,7 +41,7 @@ def article_detail(request, slug, uuid):
 @login_required
 @require_http_methods(["GET", "POST"])
 def article_create(request):
-    """View for creating articles."""
+    """View for creating articles"""
 
     if request.method == "POST":
         form = ArticleForm(request.POST)
@@ -59,7 +59,7 @@ def article_create(request):
 @login_required
 @require_http_methods(["GET", "POST"])
 def article_update(request, slug, uuid):
-    """View for editing articles."""
+    """View for editing articles"""
 
     article = get_object_or_404(Article, slug=slug, uuid=uuid)
 
@@ -82,7 +82,7 @@ def article_update(request, slug, uuid):
 @login_required
 @require_http_methods(["GET", "POST"])
 def article_delete(request, slug, uuid):
-    """View for deleting articles."""
+    """View for deleting articles"""
 
     article = get_object_or_404(Article, slug=slug, uuid=uuid)
 
@@ -101,7 +101,7 @@ def article_delete(request, slug, uuid):
 @login_required
 @require_http_methods(["POST"])
 def comment_create(request, slug, uuid):
-    """View for creating comments."""
+    """View for creating comments"""
 
     article = get_object_or_404(Article, slug=slug, uuid=uuid)
 
@@ -120,7 +120,7 @@ def comment_create(request, slug, uuid):
 @login_required
 @require_http_methods(["GET", "POST"])
 def comment_delete(request, slug, uuid, pk):
-    """View for deleting comments."""
+    """View for deleting comments"""
 
     article = get_object_or_404(Article, slug=slug, uuid=uuid)
     comment = get_object_or_404(Comment, pk=pk)
@@ -135,3 +135,22 @@ def comment_delete(request, slug, uuid, pk):
         return redirect(comment.get_absolute_url())
 
     return render(request, "article_detail.html", {"article": article})
+
+
+@login_required
+@require_http_methods(["POST"])
+def article_favorite(request, slug, uuid):
+    """View for adding or deleting an article from favorites"""
+    
+    article = get_object_or_404(Article, slug=slug, uuid=uuid)
+    
+    if request.user.profile.has_favorited(article):
+        request.user.profile.unfavorite(article)
+    else:
+        request.user.profile.favorite(article)
+
+    next_url = request.POST.get("next")
+    if next_url:
+        return redirect(next_url)
+    
+    return redirect("article_detail", slug=slug, uuid=uuid)

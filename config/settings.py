@@ -124,3 +124,6 @@ STATICFILES_DIRS = [APPS_DIR / "static"]
 
 # Custom user model to tell Django that we're not using the defaul User model
 AUTH_USER_MODEL = "users.User"
+
+
+LOGIN_URL = "/login"

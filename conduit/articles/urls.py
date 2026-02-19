@@ -11,4 +11,5 @@ urlpatterns = [
     path("article/<slug:slug>-<uuid:uuid>/comment", views.comment_create, name="comment_create"),
     path("article/<slug:slug>-<uuid:uuid>/comment/<int:pk>/delete", views.comment_delete, name="comment_delete"),
     path("feed", views.home, name="home_feed"),
+    path("article/<slug:slug>-<uuid:uuid>/favorite", views.article_favorite, name="article_favorite"),
 ]

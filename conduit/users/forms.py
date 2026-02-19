@@ -15,7 +15,7 @@ class UserForm(forms.ModelForm):
     
     class Meta:
         model = get_user_model()
-        fields = ["username", "email", "password"]
+        fields = ["username", "email"]
         
     def save(self, commit=True):
         user = super().save(commit=False)

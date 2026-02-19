@@ -28,6 +28,7 @@
     {% else %}
         <span>
             {% include "profile_follow.html" with profile=article.author %}
+            {% include "article_favorite.html" %}
         </span>
     {% endif %}
 </div>

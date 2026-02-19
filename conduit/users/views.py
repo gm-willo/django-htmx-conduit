@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView
@@ -54,9 +54,11 @@ def profile_detail(request, username):
     profile = user.profile
     context = {"profile": profile}
     
+    context["my_articles"] = profile.articles.order_by("-created_at")
+    
     if request.user.is_authenticated:
-        context["my_articles"] = profile.articles.order_by("-created_at")
         context["is_following"] = request.user.profile.is_following(profile)
+        context["favorited_articles"] = request.user.profile.favorites.order_by("-created_at")
             
     return render(request, "profile_detail.html", context)
 
@@ -72,7 +74,11 @@ def profile_update(request):
         
         if profile_form.is_valid() and user_form.is_valid():
             profile_form.save()
-            user_form.save()
+            user = user_form.save()
+            
+            if user_form.cleaned_data.get("new_password"):
+                update_session_auth_hash(request, user)
+            
             return redirect("settings")
     else:
         profile_form = ProfileForm(instance=request.user.profile)
@@ -88,7 +94,7 @@ def profile_update(request):
 @login_required
 @require_http_methods(["POST"])
 def profile_follow(request, username):
-    """Follow or unfollow a user profile."""
+    """View for Follow or unfollow a user profile."""
     
     user_to_follow = get_object_or_404(User, username=username)
     profile_to_follow = user_to_follow.profile
